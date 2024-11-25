@@ -1,7 +1,8 @@
 import torch 
 from tqdm import tqdm
+from utils import *
 
-def training_loop(n_epochs, optimizer, model, loss_fn, train_loader, val_loader, device):
+def training_loop(n_epochs, optimizer, model, loss_fn, train_loader, val_loader, device, save_masks=False):
     train_losses = []
     val_losses = []
     
@@ -34,6 +35,10 @@ def training_loop(n_epochs, optimizer, model, loss_fn, train_loader, val_loader,
                 y_pred = model(img)
                 loss = loss_fn(y_pred, mask)
                 val_loss += loss.item()
+
+                if save_masks:
+                     post_process_logits(y_pred, threshold=0.5, save_path=f"output/epoch_{epoch+1}")
+
             
             val_loss = val_loss / (idx+1)
             val_losses.append(val_loss)
