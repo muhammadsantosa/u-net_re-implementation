@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-import torchvision
-from torchsummary import summary
 import torch.nn.functional as F
 
 class DoubleConv(nn.Module):
@@ -11,11 +9,11 @@ class DoubleConv(nn.Module):
         self.out_channels = out_channels
         self.dbconv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
             nn.BatchNorm2d(out_channels),
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
-            nn.BatchNorm2d(out_channels)
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True)
         )
 
     def forward(self, x):
@@ -64,7 +62,7 @@ class UNet(nn.Module):
         self.down2 = Down(128, 256)
         self.down3 = Down(256, 512)
         self.down4 = Down(512, 512)
-        self.up1 = Up(1024, 256) #As a note, skip conenctions actually add the channel features together which makes sense
+        self.up1 = Up(1024, 256) 
         self.up2 = Up(512, 128)
         self.up3 = Up(256, 64)
         self.up4 = Up(128, 64)
